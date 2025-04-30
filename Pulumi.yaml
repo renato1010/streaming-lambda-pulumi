@@ -1,0 +1,10 @@
+name: gen-ai-pulumi-streaming-lambda
+description: A Lambda function managed with Pulumi's IaC, ready to process streaming responses from Langchain LCEL invocations
+runtime:
+  name: nodejs
+  options:
+    packagemanager: pnpm
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: serverless-aws-typescript

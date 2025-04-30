@@ -1,0 +1,22 @@
+{
+  "name": "gen-ai-pulumi-streaming-lambda",
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "@types/node": "^18",
+    "eslint": "^9.25.1",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.31.1"
+  },
+  "dependencies": {
+    "@pulumi/aws": "^6.0.0",
+    "@pulumi/aws-apigateway": "^2.0.0",
+    "@pulumi/aws-native": "^1.27.0",
+    "@pulumi/awsx": "^2.0.2",
+    "@pulumi/pulumi": "^3.113.0"
+  },
+  "scripts": {
+    "build:lambda": "cd lambda && npm run build",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
+  }
+}

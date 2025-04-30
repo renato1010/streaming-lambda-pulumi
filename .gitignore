@@ -1,0 +1,11 @@
+/bin/
+node_modules/
+dist/
+
+# ignore all .env
+*.env
+# do not ignore .env.example
+!.env.example
+
+# ignore all .log
+*.log
