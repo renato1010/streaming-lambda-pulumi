@@ -1,58 +1,41 @@
+import { pipeline } from 'node:stream/promises';
+import { Readable } from 'node:stream';
 import type { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { streamifyResponse, ResponseStream } from 'lambda-stream';
 import { amazonBedrockConversePrompt } from './prompts';
 import { getChatBedrockConverseModel } from './models';
 import { queryHandlerSchema } from './schemas';
+import { CustomTextAccumulator } from './custom-transform';
 
 const handleInternal = async (event: APIGatewayProxyEventV2, responseStream: ResponseStream) => {
   responseStream.setContentType('application/json');
   try {
-    // get body payload
+    // Get and validate body
     const body = event.body;
-    console.log({ body, isBase64Encoded: event.isBase64Encoded });
-    if (!body) {
-      throw new Error('No request payload found');
-    }
-    const isBase64Encoded = event.isBase64Encoded;
-    // decode base64 if needed
-    const bodyString = isBase64Encoded ? Buffer.from(body, 'base64').toString('utf-8') : body;
+    if (!body) throw new Error('No request payload found');
+
+    const bodyString = event.isBase64Encoded ? Buffer.from(body, 'base64').toString('utf-8') : body;
+
     const parsedBody = JSON.parse(bodyString);
-    // Validate the parsed body
     const bodyValidation = queryHandlerSchema.safeParse(parsedBody);
     if (!bodyValidation.success) {
       throw new Error(bodyValidation.error.errors[0].message);
     }
+
+    // Initialize model and chain
     const { question } = bodyValidation.data;
-    const prompt = amazonBedrockConversePrompt;
     const model = getChatBedrockConverseModel();
-    const chain = prompt.pipe(model);
-    const stream = await chain.stream({ question });
+    const chain = amazonBedrockConversePrompt.pipe(model);
+    const bedrockStream = await chain.stream({ question });
 
-    let text = '';
-    let reasoningText = '';
+    // Create streams
+    const sourceStream = Readable.from(bedrockStream);
 
-    for await (const chunk of stream) {
-      const parsedChunk = JSON.parse(JSON.stringify(chunk.content));
-      const isText = typeof parsedChunk === 'string';
-      const isArray = Array.isArray(parsedChunk);
-      const reasoningChunk =
-        isArray && parsedChunk[0]?.type === 'reasoning_content'
-          ? parsedChunk[0].reasoningText.text
-          : '';
+    // Create transform stream
+    const transformStream = new CustomTextAccumulator();
 
-      if (reasoningChunk) {
-        reasoningText += reasoningChunk;
-        responseStream.write({ reasoningText });
-        responseStream.write('\n');
-      }
-      if (isText && parsedChunk) {
-        text += parsedChunk;
-        responseStream.write({ text });
-        responseStream.write('\n');
-      }
-    }
-
-    responseStream.end();
+    // Connect streams with pipeline
+    await pipeline(sourceStream, transformStream, responseStream);
   } catch (error) {
     responseStream.write(
       JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' })
