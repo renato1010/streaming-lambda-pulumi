@@ -5,7 +5,10 @@ import * as awsNative from '@pulumi/aws-native';
 // Create an IAM role for the Lambda function
 const lambdaRole = new aws.iam.Role('lambdaRole', {
   assumeRolePolicy: aws.iam.assumeRolePolicyForPrincipal(aws.iam.Principals.LambdaPrincipal),
-  managedPolicyArns: [aws.iam.ManagedPolicy.AWSLambdaBasicExecutionRole]
+  managedPolicyArns: [
+    aws.iam.ManagedPolicy.AWSLambdaBasicExecutionRole,
+    aws.iam.ManagedPolicy.AmazonBedrockFullAccess
+  ]
 });
 
 // Create a Lambda function
@@ -24,7 +27,7 @@ const streamingFunction = new aws.lambda.Function('streamingFunction', {
 // Lambda function  permission to be invoked by  any
 new aws.lambda.Permission('streaming-permission', {
   action: 'lambda:InvokeFunctionUrl',
-  "function": streamingFunction.arn,
+  function: streamingFunction.arn,
   principal: '*',
   functionUrlAuthType: 'NONE'
 });
