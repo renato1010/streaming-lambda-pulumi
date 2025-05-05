@@ -1,6 +1,6 @@
 import { PromptTemplate } from '@langchain/core/prompts';
 
-export const amazonBedrockConversePrompt = new PromptTemplate({
+export const amazonBedrockConversePrompt = new PromptTemplate<{ question: string }>({
   template: `You are a helpful assistant. 
 You will be given a question and you will answer it in a conversational manner.
 Your answer should be informative and engaging, as if you were having a conversation with a friend.

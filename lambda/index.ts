@@ -6,6 +6,7 @@ import { amazonBedrockConversePrompt } from './prompts';
 import { getChatBedrockConverseModel } from './models';
 import { queryHandlerSchema } from './schemas';
 import { CustomTextAccumulator } from './custom-transform';
+import { decodeBase64String, queryBodySchemaValidator } from './utils';
 
 const handleInternal = async (event: APIGatewayProxyEventV2, responseStream: ResponseStream) => {
   responseStream.setContentType('application/json');
@@ -14,21 +15,15 @@ const handleInternal = async (event: APIGatewayProxyEventV2, responseStream: Res
     const body = event.body;
     if (!body) throw new Error('No request payload found');
 
-    const bodyString = event.isBase64Encoded ? Buffer.from(body, 'base64').toString('utf-8') : body;
-
-    const parsedBody = JSON.parse(bodyString);
-    const bodyValidation = queryHandlerSchema.safeParse(parsedBody);
-    if (!bodyValidation.success) {
-      throw new Error(bodyValidation.error.errors[0].message);
-    }
+    const bodyString = decodeBase64String(body, event.isBase64Encoded);
 
     // Initialize model and chain
-    const { question } = bodyValidation.data;
+    const { question } = queryBodySchemaValidator(bodyString, queryHandlerSchema);
     const model = getChatBedrockConverseModel();
     const chain = amazonBedrockConversePrompt.pipe(model);
     const bedrockStream = await chain.stream({ question });
 
-    // Create streams
+    // Create source stream
     const sourceStream = Readable.from(bedrockStream);
 
     // Create transform stream
