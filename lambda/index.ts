@@ -9,7 +9,7 @@ import { CustomTextAccumulator } from './custom-transform';
 import { decodeBase64String, queryBodySchemaValidator } from './utils';
 
 const handleInternal = async (event: APIGatewayProxyEventV2, responseStream: ResponseStream) => {
-  responseStream.setContentType('application/json');
+  responseStream.setContentType('text/event-stream');
   try {
     // Get and validate body
     const body = event.body;

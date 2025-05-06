@@ -5,18 +5,21 @@
     "@types/node": "^18",
     "eslint": "^9.25.1",
     "typescript": "^5.0.0",
-    "typescript-eslint": "^8.31.1"
+    "typescript-eslint": "^8.31.1",
+    "vitest": "^3.1.2"
   },
   "dependencies": {
     "@pulumi/aws": "^6.0.0",
     "@pulumi/aws-apigateway": "^2.0.0",
     "@pulumi/aws-native": "^1.27.0",
     "@pulumi/awsx": "^2.0.2",
-    "@pulumi/pulumi": "^3.113.0"
+    "@pulumi/pulumi": "^3.113.0",
+    "upath": "^2.0.1"
   },
   "scripts": {
     "build:lambda": "cd lambda && npm run build",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "test": "vitest"
   }
 }

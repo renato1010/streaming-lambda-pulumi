@@ -2,4 +2,5 @@ onlyBuiltDependencies:
   - '@pulumi/aws-native'
   - '@pulumi/docker'
   - '@pulumi/docker-build'
+  - esbuild
   - protobufjs
