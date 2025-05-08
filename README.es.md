@@ -66,6 +66,8 @@ it('valida el payload contra el esquema', () => {
 
 ### 2. Pruebas de Infraestructura (`/tests/streaming-function.test.ts`)
 
+⚠️: Estas creando infraestructura real, se recomienda ser generoso con los timeouts
+
 ```typescript
 // Prueba de integración con Pulumi Automation API
 it('debe tener URL de streaming', async () => {
@@ -124,6 +126,11 @@ http --stream POST $(pulumi stack output streamingURL )  \
 - [Guía Pulumi para Streaming](https://www.pulumi.com/blog/aws-lambda-response-streaming/)
 - [Documentación de LangChain JS](https://js.langchain.com/docs/how_to/sequence/)
 
+## Diagrama de Arquitectura
+
+<p align="center">
+<img width="800" src="assets/streaming-lambda-pulumi-diagram-2024-06-20-1752.png">
+</p>
 ---
 
 **¿Te resultó útil?** ⭐ Dale una estrella al repositorio  

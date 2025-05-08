@@ -40,7 +40,7 @@ pulumi up -y
 pnpm vitest -t utils
 
 # Execute integration tests
-pnpm test -t streaming
+pnpm vitest -t streaming
 ```
 
 ## 🔍 Testing Architecture
@@ -64,6 +64,8 @@ it('should validate body payload against schema', () => {
 ```
 
 ### 2. Infrastructure Tests (`/tests/streaming-function.test.ts`)
+
+⚠️: Here you are providing real infrstructure, so be generous with the timeouts
 
 ```typescript
 // Pulumi Automation API integration test
@@ -122,7 +124,13 @@ http --stream POST $(pulumi stack output streamingURL )  \
 - [Pulumi Streaming Lambda Guide](https://www.pulumi.com/blog/aws-lambda-response-streaming/)
 - [LangChain JS Documentation](https://js.langchain.com/docs/how_to/sequence/)
 
+## Arch Diagram
+
+<p align="center">
+<img width="800" src="assets/streaming-lambda-pulumi-diagram-2024-06-20-1752.png">
+</p>
+
 ---
 
 **Found this useful?** ⭐ Star the repo
-_License: [MIT](LICENSE)_ 📜
+\_License: [MIT](LICENSE) 📜
