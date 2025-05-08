@@ -90,6 +90,14 @@ it('should return a response stream', { timeout: 60000 }, async () => {
 });
 ```
 
+⚠️ Warning: When running **infrastructure** tests, your stack is deployed and then destroyed. After
+running tests like those in `tests/streaming-function.test.ts`, you'll need to redeploy your
+infrastructure by running:
+
+```bash
+pulumi up
+```
+
 ## 🎬 Live Demo: Stream Responses with HTTPie
 
 ```bash

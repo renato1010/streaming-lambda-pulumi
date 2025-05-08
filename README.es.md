@@ -92,6 +92,14 @@ it('devuelve un stream de respuesta', { timeout: 60000 }, async () => {
 });
 ```
 
+⚠️ Advertencia: Al ejecutar pruebas de **infraestructura**, tu stack se despliega y luego se destruye. Después
+de ejecutar pruebas como las de `tests/streaming-function.test.ts`, necesitarás redesplegar tu
+infraestructura con:
+
+```bash
+pulumi up
+```
+
 ## 🎬 Demo en Vivo: Streaming con HTTPie
 
 ```bash
